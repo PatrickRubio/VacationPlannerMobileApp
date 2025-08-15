@@ -12,13 +12,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
         <activity
-            android:name=".UI.VacationDetails"
-            android:label="Vacation Details and Excursions List"
+            android:name=".UI.ExcursionDetails"
+            android:label="Excursion Details"
+            android:parentActivityName=".UI.VacationDetails"
             android:exported="false" />
+        <activity
+            android:name=".UI.VacationDetails"
+            android:exported="false"
+            android:label="Vacation Details and Excursions List"
+            android:parentActivityName=".UI.VacationList" />
         <activity
             android:name=".UI.VacationList"
             android:exported="false"
-            android:label="Vacation List" />
+            android:label="Vacation List"
+            android:parentActivityName=".UI.MainActivity" />
         <activity
             android:name=".UI.MainActivity"
             android:exported="true"
