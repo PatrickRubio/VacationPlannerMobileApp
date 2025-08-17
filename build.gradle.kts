@@ -2,3 +2,5 @@
 plugins {
     alias(libs.plugins.android.application) apply false
 }
+
+extra["roomVersion"] = "2.5.1"

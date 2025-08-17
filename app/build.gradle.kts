@@ -40,4 +40,8 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    // Room components
+    implementation("androidx.room:room-runtime:${rootProject.extra.get("roomVersion")}")
+    annotationProcessor("androidx.room:room-compiler:${rootProject.extra.get("roomVersion")}")
+    androidTestImplementation("androidx.room:room-testing:${rootProject.extra.get("roomVersion")}")
 }
