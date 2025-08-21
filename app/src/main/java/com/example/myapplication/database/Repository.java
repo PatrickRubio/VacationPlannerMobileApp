@@ -29,7 +29,7 @@ public class Repository {
 
 
     // VACATION METHODS
-    public List<Vacation>getmALLVacations() {
+    public List<Vacation>getmAllVacations() {
         databaseExecutor.execute(()-> {
             mALLVacations = mVacationDAO.getAllVacations();
         });

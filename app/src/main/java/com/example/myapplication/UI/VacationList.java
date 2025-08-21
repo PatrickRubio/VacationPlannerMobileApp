@@ -12,12 +12,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.database.Repository;
 import com.example.myapplication.entities.Excursion;
 import com.example.myapplication.entities.Vacation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.List;
 
 public class VacationList extends AppCompatActivity {
     private Repository repository;
@@ -35,8 +39,14 @@ public class VacationList extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        repository = new Repository(getApplication());
+        List<Vacation> allVacations = repository.getmAllVacations();
+        final VacationAdapter vacationAdapter = new VacationAdapter(this);
+        recyclerView.setAdapter(vacationAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        System.out.println(getIntent().getStringExtra("test"));
+        //System.out.println(getIntent().getStringExtra("test"));
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
