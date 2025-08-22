@@ -45,6 +45,8 @@ public class VacationList extends AppCompatActivity {
         final VacationAdapter vacationAdapter = new VacationAdapter(this);
         recyclerView.setAdapter(vacationAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        vacationAdapter.setVacations(allVacations);
+
 
         //System.out.println(getIntent().getStringExtra("test"));
 
@@ -60,6 +62,17 @@ public class VacationList extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_vacation_list, menu);
         return true;
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        List<Vacation> allVacations = repository.getmAllVacations();
+        RecyclerView recyclerView = findViewById((R.id.recyclerView));
+        final VacationAdapter vacationAdapter = new VacationAdapter(this);
+        recyclerView.setAdapter(vacationAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        vacationAdapter.setVacations(allVacations);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId()==R.id.mysample) {
