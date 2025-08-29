@@ -53,11 +53,10 @@ public class VacationDetails extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(VacationDetails.this, ExcursionDetails.class);
+                intent.putExtra("vacationID", vacationID);
                 startActivity(intent);
             }
         });
-
-
 
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -98,4 +97,18 @@ public class VacationDetails extends AppCompatActivity {
         }
         return true;
     }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        RecyclerView recyclerView = findViewById(R.id.excursionRecyclerView);
+//        repository = new Repository(getApplication());
+//        final ExcursionAdapter excursionAdapter = new ExcursionAdapter(this);
+//        recyclerView.setAdapter(excursionAdapter);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        List<Excursion> filteredExcursions = new ArrayList<>();
+//        for (Excursion e : repository.getmALLExcursions()) {
+//            if (e.getVacationID() == vacationID) filteredExcursions.add(e);
+//        }
+//        excursionAdapter.setExcursions(filteredExcursions);
+//    }
 }

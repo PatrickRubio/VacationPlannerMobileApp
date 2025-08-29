@@ -29,7 +29,7 @@ public class VacationList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+//        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_vacation_list);
         FloatingActionButton fab=findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +75,13 @@ public class VacationList extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId()==android.R.id.home) {
+            this.finish();
+//            Intent intent = new Intent(VacationList.this, VacationDetails.class);
+//            startActivity(intent);
+            return true;
+        }
+
         if (item.getItemId()==R.id.mysample) {
             repository = new Repository(getApplication());
             //Toast.makeText(VacationList.this,"put in sample data", Toast.LENGTH_LONG).show();
@@ -86,12 +93,6 @@ public class VacationList extends AppCompatActivity {
             repository.insert(excursion);
             excursion = new Excursion(0, "Hiking", 15, 1);
             repository.insert(excursion);
-            return true;
-        }
-        if (item.getItemId()==android.R.id.home) {
-            this.finish();
-//            Intent intent = new Intent(VacationList.this, VacationDetails.class);
-//            startActivity(intent);
             return true;
         }
         return true;

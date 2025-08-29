@@ -31,10 +31,10 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = getBindingAdapterPosition();
+                    int position = getAdapterPosition();
                     final Excursion current = mExcursions.get(position);
                     Intent intent = new Intent(context, ExcursionDetails.class);
-                    intent.putExtra("id", current.getVacationID());
+                    intent.putExtra("id", current.getExcursionID());
                     intent.putExtra("name", current.getExcursionName());
                     intent.putExtra("price", current.getPrice());
                     context.startActivity(intent);
@@ -61,7 +61,7 @@ public class ExcursionAdapter extends RecyclerView.Adapter<ExcursionAdapter.Excu
             holder.excursionItemView2.setText(Integer.toString(vacationID));
         } else {
             holder.excursionItemView.setText("No excursion name");
-            holder.excursionItemView.setText("No excursion id");
+            holder.excursionItemView2.setText("No excursion id");
         }
 
     }

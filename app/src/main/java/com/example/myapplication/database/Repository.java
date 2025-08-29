@@ -44,12 +44,22 @@ public class Repository {
         databaseExecutor.execute(() -> {
             mVacationDAO.insert(vacation);
         });
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void update(Vacation vacation) {
         databaseExecutor.execute(() -> {
             mVacationDAO.update(vacation);
         });
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
     public void delete(Vacation vacation){
         databaseExecutor.execute(()-> {
@@ -89,12 +99,22 @@ public class Repository {
         databaseExecutor.execute(() -> {
             mExcursionDAO.insert(excursion);
         });
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void update(Excursion excursion) {
         databaseExecutor.execute(() -> {
             mExcursionDAO.update(excursion);
         });
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
     public void delete(Excursion excursion){
         databaseExecutor.execute(()-> {

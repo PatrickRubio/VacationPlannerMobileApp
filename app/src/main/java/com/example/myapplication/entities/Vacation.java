@@ -21,6 +21,8 @@ public class Vacation {
         return vacationID;
     }
 
+    public String toString() { return vacationName; }
+
     public void setVacationID(int vacationID) {
         this.vacationID = vacationID;
     }
