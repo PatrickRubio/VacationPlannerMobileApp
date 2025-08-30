@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.ViewTreeOnBackPressedDispatcherOwner;
@@ -32,6 +33,8 @@ public class VacationDetails extends AppCompatActivity {
     EditText editName;
     EditText editPrice;
     Repository repository;
+    Vacation currentVacation;
+    int numExcursions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,10 @@ public class VacationDetails extends AppCompatActivity {
         return true;
     }
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
+        }
         if (item.getItemId() == R.id.vacationsave) {
             Vacation vacation;
             if (vacationID == -1){
@@ -93,6 +100,22 @@ public class VacationDetails extends AppCompatActivity {
                 vacation = new Vacation(vacationID, editName.getText().toString(), Double.parseDouble(editPrice.getText().toString()));
                 repository.update(vacation);
                 this.finish();
+            }
+        }
+        if (item.getItemId() == R.id.vacationdelete) {
+            for (Vacation vacation:repository.getmAllVacations()) {
+                if(vacation.getVacationID() == vacationID)currentVacation = vacation;
+            }
+            numExcursions=0;
+            for (Excursion excursion: repository.getmALLExcursions()) {
+                if (excursion.getVacationID() == vacationID) ++numExcursions;
+            }
+            if (numExcursions == 0) {
+                repository.delete(currentVacation);
+                Toast.makeText(VacationDetails.this, currentVacation.getVacationName() + " was deleted", Toast.LENGTH_LONG).show();
+                VacationDetails.this.finish();
+            } else {
+                Toast.makeText(VacationDetails.this, "Can't delete a vacation with excursions", Toast.LENGTH_LONG).show();
             }
         }
         return true;
