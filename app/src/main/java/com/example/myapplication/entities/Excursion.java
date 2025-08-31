@@ -10,13 +10,15 @@ public class Excursion {
     private String excursionName;
     private double price;
     private int vacationID;
+    private String excursionDate;
 
     // Constructor for Excursion Class
-    public Excursion(int excursionID, String excursionName, double price, int vacationID) {
+    public Excursion(int excursionID, String excursionName, double price, int vacationID, String excursionDate) {
         this.excursionID = excursionID;
         this.excursionName = excursionName;
         this.price = price;
         this.vacationID = vacationID;
+        this.excursionDate = excursionDate;
     }
 
     // Getters and Setters for Excursion Class
@@ -51,4 +53,8 @@ public class Excursion {
     public void setVacationID(int vacationID) {
         this.vacationID = vacationID;
     }
+
+    public String getExcursionDate(){ return excursionDate; }
+
+    public void setExcursionDate(String excursionDate) { this.excursionDate = excursionDate; }
 }
