@@ -185,15 +185,15 @@ public class VacationDetails extends AppCompatActivity {
 
     // Start and end date labels
     private void updateStartDateLabel() {
-        String myFormat = "MM/dd/yy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        String dateFormat = "MM/dd/yy";
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
         editStartDate.setText(sdf.format(myCalendarStart.getTime()));
     }
 
     // Helper method to update end date label
     private void updateEndDateLabel() {
-        String myFormat = "MM/dd/yy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        String dateFormat = "MM/dd/yy";
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
         editEndDate.setText(sdf.format(myCalendarEnd.getTime()));
     }
 
@@ -268,8 +268,8 @@ public class VacationDetails extends AppCompatActivity {
         // Alert for start date
         if (item.getItemId() == R.id.alertstart) {
             String startOnScreenDate = editStartDate.getText().toString();
-            String startAlert = "Vacation " + name + " is about to end";
-            mainAlertPicker(startOnScreenDate, startAlert);
+            String mainAlert = "Vacation " + name + " is about to start";
+            mainAlertPicker(startOnScreenDate, mainAlert);
             return true;
         }
 
@@ -277,22 +277,22 @@ public class VacationDetails extends AppCompatActivity {
         if (item.getItemId() == R.id.alertend) {
             // Alert for end date
             String endOnScreenDate = editEndDate.getText().toString();
-            String endAlert = "Vacation " + name + " is about to end";
-            mainAlertPicker(endOnScreenDate, endAlert);
+            String mainAlert = "Vacation " + name + " is about to end";
+            mainAlertPicker(endOnScreenDate, mainAlert);
             return true;
         }
 
         // Alert for both start and end date
         if (item.getItemId() == R.id.alertboth) {
             // Alert for start date
-            String startOnScreenDate = editStartDate.getText().toString();
-            String startAlert = "Vacation " + name + " is starting soon";
-            mainAlertPicker(startOnScreenDate, startAlert);
+            String onScreenDate = editStartDate.getText().toString();
+            String mainAlert = "Vacation " + name + " is starting soon";
+            mainAlertPicker(onScreenDate, mainAlert);
 
             // Alert for end date
-            String endOnScreenDate = editEndDate.getText().toString();
-            String endAlert = "Vacation " + name + " is about to end";
-            mainAlertPicker(endOnScreenDate, endAlert);
+            onScreenDate = editEndDate.getText().toString();
+            mainAlert = "Vacation " + name + " is about to end";
+            mainAlertPicker(onScreenDate, mainAlert);
             return true;
 
         }
@@ -304,7 +304,6 @@ public class VacationDetails extends AppCompatActivity {
         String dateFormat = "MM/dd/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
         Date date;
-
         try {
             date = sdf.parse(onScreenDate);
             if (date == null) return;
@@ -314,42 +313,17 @@ public class VacationDetails extends AppCompatActivity {
             return;
         }
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.set(Calendar.HOUR_OF_DAY, 8);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
+        long triggerTime = date.getTime();
 
-        long triggerTime = calendar.getTimeInMillis();
-
-        Intent intent = new Intent(this, MyReceiver.class);
+        Intent intent = new Intent(VacationDetails.this, MyReceiver.class);
         intent.putExtra("key", mainAlert);
 
-        numAlert = new Random().nextInt(99999);
-        PendingIntent sender = PendingIntent.getBroadcast(
-                VacationDetails.this, numAlert, intent, PendingIntent.FLAG_IMMUTABLE
-        );
-
+        numAlert = rand.nextInt(99999);
+        PendingIntent sender = PendingIntent.getBroadcast(VacationDetails.this, numAlert, intent, PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, triggerTime, sender);
 
-        if (alarmManager != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (alarmManager.canScheduleExactAlarms()) {
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, sender);
-                } else {
-                    // Ask user to allow exact alarms
-                    Intent settingsIntent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
-                    settingsIntent.setData(Uri.parse("package:" + getPackageName()));
-                    startActivity(settingsIntent);
-
-                    Toast.makeText(this, "Please allow exact alarms in settings.", Toast.LENGTH_LONG).show();
-                }
-            } else {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, sender);
-            }
-        }
-
-        Log.d("VacationAlert", "Alert set for " + onScreenDate + " with message: " + mainAlert);
+        System.out.println("Vacation = " + numAlert);
     }
 
 

@@ -67,8 +67,8 @@ public class ExcursionDetails extends AppCompatActivity {
         editNote = findViewById(R.id.note);
         editDate = findViewById(R.id.date);
 
-        String myFormat = "MM/dd/yy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        String dateFormat = "MM/dd/yy";
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
 
         editDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,8 +111,8 @@ public class ExcursionDetails extends AppCompatActivity {
         spinner.setSelection(0);
     }
     private void updateLabelStart() {
-        String myFormat = "MM/dd/yy";
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        String dateFormat = "MM/dd/yy";
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
 
         editDate.setText(sdf.format(myCalendarStart.getTime()));
     }
