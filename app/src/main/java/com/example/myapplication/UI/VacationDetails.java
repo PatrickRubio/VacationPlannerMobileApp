@@ -1,8 +1,15 @@
 package com.example.myapplication.UI;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +33,7 @@ import com.example.myapplication.entities.Excursion;
 import com.example.myapplication.entities.Vacation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +41,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class VacationDetails extends AppCompatActivity {
     String name;
@@ -55,8 +64,11 @@ public class VacationDetails extends AppCompatActivity {
     DatePickerDialog.OnDateSetListener setEndDate;
     final Calendar myCalendarStart = Calendar.getInstance();
     final Calendar myCalendarEnd = Calendar.getInstance();
-    String myFormat = "MM/dd/yy";
-    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+    String dateFormat = "MM/dd/yy";
+    SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
+
+    Random rand = new Random();
+    int numAlert = rand.nextInt(99999);
 
 
     @Override
@@ -80,6 +92,7 @@ public class VacationDetails extends AppCompatActivity {
         editName.setText(name);
         editHotel.setText(vacationHotel);
         editPrice.setText(Double.toString(price));
+        numAlert = rand.nextInt(99999);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,6 +182,7 @@ public class VacationDetails extends AppCompatActivity {
         });
 
     }
+
     // Start and end date labels
     private void updateStartDateLabel() {
         String myFormat = "MM/dd/yy";
@@ -182,8 +196,9 @@ public class VacationDetails extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         editEndDate.setText(sdf.format(myCalendarEnd.getTime()));
     }
+
     // Menu inflater for vacation details
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_vacationdetails, menu);
         return true;
     }
@@ -194,13 +209,24 @@ public class VacationDetails extends AppCompatActivity {
             this.finish();
             return true;
         }
+        // If the user selects the option to save a vacation
         if (item.getItemId() == R.id.vacationsave) {
             Vacation vacation;
 
             try {
                 String vacationHotel = editHotel.getText().toString();
-                String startDate = editStartDate.getText().toString();
-                String endDate = editEndDate.getText().toString();
+                String startDateStr = editStartDate.getText().toString();
+                String endDateStr = editEndDate.getText().toString();
+
+                // Validation to ensure end date is after start date for the user
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
+                Date start = sdf.parse(startDateStr);
+                Date end = sdf.parse(endDateStr);
+                if (end.before(start)) {
+                    Toast.makeText(this, "The end date must be after the start date", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                // If user vacation does not exist already
                 if (vacationID == -1) {
                     if (repository.getmAllVacations().size() == 0) vacationID = 1;
                     else
@@ -213,18 +239,21 @@ public class VacationDetails extends AppCompatActivity {
                     repository.update(vacation);
                     this.finish();
                 }
+
+            } catch (ParseException e) {
+                Toast.makeText(this, "Please enter dates in the correct format.", Toast.LENGTH_LONG).show();
             } catch (NumberFormatException e) {
                 Toast.makeText(this, "Please enter a valid number for the price.", Toast.LENGTH_LONG).show();
-                return true;
-
             }
+            return true;
         }
+        // If the user selects the option to delete a vacation
         if (item.getItemId() == R.id.vacationdelete) {
-            for (Vacation vacation:repository.getmAllVacations()) {
-                if(vacation.getVacationID() == vacationID)currentVacation = vacation;
+            for (Vacation vacation : repository.getmAllVacations()) {
+                if (vacation.getVacationID() == vacationID) currentVacation = vacation;
             }
-            numExcursions=0;
-            for (Excursion excursion: repository.getmALLExcursions()) {
+            numExcursions = 0;
+            for (Excursion excursion : repository.getmALLExcursions()) {
                 if (excursion.getVacationID() == vacationID) ++numExcursions;
             }
             if (numExcursions == 0) {
@@ -234,9 +263,104 @@ public class VacationDetails extends AppCompatActivity {
             } else {
                 Toast.makeText(VacationDetails.this, "Can't delete a vacation with excursions", Toast.LENGTH_LONG).show();
             }
+            return true;
         }
-        return true;
+        // Alert for start date
+        if (item.getItemId() == R.id.alertstart) {
+            String startOnScreenDate = editStartDate.getText().toString();
+            String startAlert = "Vacation " + name + " is about to end";
+            mainAlertPicker(startOnScreenDate, startAlert);
+            return true;
+        }
+
+        // Alert for end date
+        if (item.getItemId() == R.id.alertend) {
+            // Alert for end date
+            String endOnScreenDate = editEndDate.getText().toString();
+            String endAlert = "Vacation " + name + " is about to end";
+            mainAlertPicker(endOnScreenDate, endAlert);
+            return true;
+        }
+
+        // Alert for both start and end date
+        if (item.getItemId() == R.id.alertboth) {
+            // Alert for start date
+            String startOnScreenDate = editStartDate.getText().toString();
+            String startAlert = "Vacation " + name + " is starting soon";
+            mainAlertPicker(startOnScreenDate, startAlert);
+
+            // Alert for end date
+            String endOnScreenDate = editEndDate.getText().toString();
+            String endAlert = "Vacation " + name + " is about to end";
+            mainAlertPicker(endOnScreenDate, endAlert);
+            return true;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
+
+    // Set the date alarm method with mainAlertPicker
+    public void mainAlertPicker(String onScreenDate, String mainAlert) {
+        String dateFormat = "MM/dd/yy";
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
+        Date date;
+
+        try {
+            date = sdf.parse(onScreenDate);
+            if (date == null) return;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Not Valid.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        long triggerTime = calendar.getTimeInMillis();
+
+        Intent intent = new Intent(this, MyReceiver.class);
+        intent.putExtra("key", mainAlert);
+
+        numAlert = new Random().nextInt(99999);
+        PendingIntent sender = PendingIntent.getBroadcast(
+                VacationDetails.this, numAlert, intent, PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        if (alarmManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, sender);
+                } else {
+                    // Ask user to allow exact alarms
+                    Intent settingsIntent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                    settingsIntent.setData(Uri.parse("package:" + getPackageName()));
+                    startActivity(settingsIntent);
+
+                    Toast.makeText(this, "Please allow exact alarms in settings.", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, sender);
+            }
+        }
+
+        Log.d("VacationAlert", "Alert set for " + onScreenDate + " with message: " + mainAlert);
+    }
+
+
+
+
+
+
+
+
+
+
     @Override
     protected void onResume() {
         super.onResume();

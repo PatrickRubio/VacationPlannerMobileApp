@@ -152,24 +152,24 @@ public class ExcursionDetails extends AppCompatActivity {
             startActivity(shareIntent);
             return true;
         }
-//        if (item.getItemId() == R.id.notify) {
-//            String dateFromScreen = editDate.getText().toString();
-//            String myFormat = "MM/dd/yy";
-//            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-//            Date myDate = null;
-//            try {
-//                myDate = sdf.parse(dateFromScreen);
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-//            Long trigger = myDate.getTime();
-//            Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
-//            intent.putExtra("key", "Correct!");
-//            PendingIntent sender=PendingIntent.getBroadcast(ExcursionDetails.this,++MainActivity.numAlert, intent,PendingIntent.FLAG_IMMUTABLE);
-//            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger,sender);
-//            return true;
-//        }
+        if (item.getItemId() == R.id.notify) {
+            String dateFromScreen = editDate.getText().toString();
+            String dateFormat = "MM/dd/yy";
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
+            Date myDate = null;
+            try {
+                myDate = sdf.parse(dateFromScreen);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Long trigger = myDate.getTime();
+            Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
+            intent.putExtra("key", "Don't forget about your vacation excursions!");
+            PendingIntent sender=PendingIntent.getBroadcast(ExcursionDetails.this,++MainActivity.numAlert, intent,PendingIntent.FLAG_IMMUTABLE);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, trigger,sender);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 }
