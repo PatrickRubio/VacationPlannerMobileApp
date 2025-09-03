@@ -231,11 +231,11 @@ public class VacationDetails extends AppCompatActivity {
                     if (repository.getmAllVacations().size() == 0) vacationID = 1;
                     else
                         vacationID = repository.getmAllVacations().get(repository.getmAllVacations().size() - 1).getVacationID() + 1;
-                    vacation = new Vacation(vacationID, editName.getText().toString(), Double.parseDouble(editPrice.getText().toString()), vacationHotel, startDate, endDate);
+                    vacation = new Vacation(vacationID, editName.getText().toString(), Double.parseDouble(editPrice.getText().toString()), vacationHotel, startDateStr, endDateStr);
                     repository.insert(vacation);
                     this.finish();
                 } else {
-                    vacation = new Vacation(vacationID, editName.getText().toString(), Double.parseDouble(editPrice.getText().toString()), vacationHotel, startDate, endDate);
+                    vacation = new Vacation(vacationID, editName.getText().toString(), Double.parseDouble(editPrice.getText().toString()), vacationHotel, startDateStr, endDateStr);
                     repository.update(vacation);
                     this.finish();
                 }
@@ -296,9 +296,41 @@ public class VacationDetails extends AppCompatActivity {
             return true;
 
         }
+        // Enable sharing features with vacation details
+        if (item.getItemId() == R.id.share) {
+            // Vacation details
+            String vacationDetailsShare = "Vacation name: " + editName.getText().toString() + "\n"
+                    + "Hotel: " + editHotel.getText().toString() + "\n"
+                    + "Price: $" + editPrice.getText().toString() + "\n"
+                    + "Start Date: " + editStartDate.getText().toString() + "\n"
+                    + "End Date: " + editEndDate.getText().toString();
+            // Excursion details being added to vacation details when shared
+            List <Excursion> excursions = repository.getAssociatedExcursions(vacationID);
+
+            if (excursions != null && !excursions.isEmpty()) {
+                vacationDetailsShare = vacationDetailsShare + "\n\nExcursions: \n";
+                for (int i = 0; i < excursions.size(); i++) {
+                    Excursion excursion = excursions.get(i);
+                    vacationDetailsShare = vacationDetailsShare + excursion.getExcursionName() + " on " + excursion.getExcursionDate() + "\n";
+                }
+            } else {
+                vacationDetailsShare = vacationDetailsShare + "\nNo excursions planned with this vacation.";
+            }
+
+            // Share intent
+            Intent sentIntent= new Intent();
+            sentIntent.setAction(Intent.ACTION_SEND);
+            sentIntent.putExtra(Intent.EXTRA_TEXT,vacationDetailsShare);
+            sentIntent.putExtra(Intent.EXTRA_TITLE,"Vacation to be shared");
+            sentIntent.setType("text/plain");
+            // Lets user choose where to share
+            Intent shareIntent=Intent.createChooser(sentIntent,"Share vacation via");
+            startActivity(shareIntent);
+
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
-
     // Set the date alarm method with mainAlertPicker
     public void mainAlertPicker(String onScreenDate, String mainAlert) {
         String dateFormat = "MM/dd/yy";
@@ -325,11 +357,6 @@ public class VacationDetails extends AppCompatActivity {
 
         System.out.println("Vacation = " + numAlert);
     }
-
-
-
-
-
 
 
 
