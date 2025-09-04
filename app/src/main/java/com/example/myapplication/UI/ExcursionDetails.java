@@ -70,6 +70,9 @@ public class ExcursionDetails extends AppCompatActivity {
         String dateFormat = "MM/dd/yy";
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
 
+        if (excursionDate != null) {
+            editDate.setText(excursionDate);
+        }
         editDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,7 +111,14 @@ public class ExcursionDetails extends AppCompatActivity {
 
         ArrayAdapter<Vacation>vacationAdapter=new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,vacationArrayList);
         spinner.setAdapter(vacationAdapter);
-        spinner.setSelection(0);
+        // Set spinner to correlate matching vacation ID
+        for (int i = 0; i < vacationArrayList.size(); i++) {
+            if (vacationArrayList.get(i).getVacationID() == vacationID) {
+                spinner.setSelection(i);
+                break;
+            }
+        }
+
     }
     private void updateLabelStart() {
         String dateFormat = "MM/dd/yy";
@@ -140,6 +150,7 @@ public class ExcursionDetails extends AppCompatActivity {
                 excursion = new Excursion(excursionID, editName.getText().toString(), Double.parseDouble(editPrice.getText().toString()), vacationID, excursionDate);
                 repository.update(excursion);
             }
+            this.finish();
             return true;
         }
         if (item.getItemId() == R.id.share) {
