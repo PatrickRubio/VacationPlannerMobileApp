@@ -358,10 +358,6 @@ public class VacationDetails extends AppCompatActivity {
         System.out.println("Vacation = " + numAlert);
     }
 
-
-
-
-
     @Override
     protected void onResume() {
         super.onResume();

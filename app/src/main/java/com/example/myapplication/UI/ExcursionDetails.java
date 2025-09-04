@@ -136,6 +136,7 @@ public class ExcursionDetails extends AppCompatActivity {
             this.finish();
             return true;
         }
+        // Save the excursion with the menu
         if (item.getItemId() == R.id.excursionsave) {
             Excursion excursion;
             String excursionDate = editDate.getText().toString();
@@ -153,6 +154,19 @@ public class ExcursionDetails extends AppCompatActivity {
             this.finish();
             return true;
         }
+        // Delete excursion with the menu
+        if (item.getItemId() == R.id.excursiondelete) {
+            // See which excursion to delete
+            Excursion excursion = new Excursion(excursionID, editName.getText().toString(), Double.parseDouble(editPrice.getText().toString()), vacationID, editDate.getText().toString());
+            // Call the repository to delete excursion
+            repository.delete(excursion);
+            // Close the screen
+            this.finish();
+            return true;
+
+        }
+
+        // Share the excursion with the menu
         if (item.getItemId() == R.id.share) {
             Intent sentIntent= new Intent();
             sentIntent.setAction(Intent.ACTION_SEND);
