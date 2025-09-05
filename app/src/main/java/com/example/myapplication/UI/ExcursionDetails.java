@@ -168,10 +168,14 @@ public class ExcursionDetails extends AppCompatActivity {
 
         // Share the excursion with the menu
         if (item.getItemId() == R.id.share) {
+            String excursionDetailsShare = "Excursion name: " + editName.getText().toString() + "\n"
+                    + "Price: $" + editPrice.getText().toString() + "\n"
+                    + "Note: " + editNote.getText().toString() + "\n"
+                    + "Date: " + editDate.getText().toString();
             Intent sentIntent= new Intent();
             sentIntent.setAction(Intent.ACTION_SEND);
-            sentIntent.putExtra(Intent.EXTRA_TEXT, editNote.getText().toString()+ "EXTRA_TEXT");
-            sentIntent.putExtra(Intent.EXTRA_TITLE, editNote.getText().toString()+ "EXTRA_TITLE");
+            sentIntent.putExtra(Intent.EXTRA_TEXT, excursionDetailsShare);
+            sentIntent.putExtra(Intent.EXTRA_TITLE, "Excursion Details");
             sentIntent.setType("text/plain");
             Intent shareIntent=Intent.createChooser(sentIntent,null);
             startActivity(shareIntent);
@@ -180,6 +184,7 @@ public class ExcursionDetails extends AppCompatActivity {
         if (item.getItemId() == R.id.notify) {
             String dateFromScreen = editDate.getText().toString();
             String dateFormat = "MM/dd/yy";
+            String notifyAlert = "Don't forget about your " + name + " excursion today!";
             SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
             Date myDate = null;
             try {
@@ -189,7 +194,7 @@ public class ExcursionDetails extends AppCompatActivity {
             }
             Long trigger = myDate.getTime();
             Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
-            intent.putExtra("key", "Don't forget about your vacation excursions!");
+            intent.putExtra("key", notifyAlert);
             PendingIntent sender=PendingIntent.getBroadcast(ExcursionDetails.this,++MainActivity.numAlert, intent,PendingIntent.FLAG_IMMUTABLE);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP, trigger,sender);

@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="navy">#1A237E</color>
+    <color name="navy_variant">#3949AB</color>
+    <color name="cream">#FFF8E1</color>
+    <color name="wood_brown">#6D4C41</color>
+    <color name="wood_brown_light">#A1887F</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="background_light">#FAFAFA</color>
+    <color name="background_dark">#121212</color>
 </resources>
