@@ -27,12 +27,13 @@ public class Repository {
         mVacationDAO = db.vacationDAO();
     }
 
-
+    // Gets vacations from database and creates a new database
     // VACATION METHODS
     public List<Vacation>getmAllVacations() {
         databaseExecutor.execute(()-> {
             mALLVacations = mVacationDAO.getAllVacations();
         });
+        // Only needs sleep try/catch because this is asynchronous
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {

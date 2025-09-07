@@ -15,6 +15,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="56dp">
 
+        <!-- Excursion Details -->
+
+        <!-- Title -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -24,14 +27,18 @@
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="Title" />
+                android:text="Title"
+                style="@style/Text.Medium"
+                android:padding="10dp"/>
 
             <EditText
                 android:id="@+id/excursionName"
                 android:layout_width="200dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:padding="10dp"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <!-- Price -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,14 +48,18 @@
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="Price" />
+                android:text="Price"
+                style="@style/Text.Medium"
+                android:padding="10dp"/>
 
             <EditText
                 android:id="@+id/excursionPrice"
                 android:layout_width="200dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:padding="10dp"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <!-- Note -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,14 +69,18 @@
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="Note" />
+                android:text="Note"
+                style="@style/Text.Medium"
+                android:padding="10dp"/>
 
             <EditText
                 android:id="@+id/note"
                 android:layout_width="200dp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:padding="10dp"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <!-- Date -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,17 +90,24 @@
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:layout_margin="2dp"
-                android:text="Date" />
+                android:text="Date"
+                style="@style/Text.Medium"
+                android:padding="10dp"/>
 
             <TextView
                 android:id="@+id/date"
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
-                android:inputType="none" />
+                android:inputType="none"
+                style="@style/Text.Medium"
+                android:padding="10dp"/>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <!-- Spinner for what vacation the excursion is associated with -->
         <Spinner
             android:id="@+id/spinner"
+            android:paddingTop="8dp"
+            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </androidx.appcompat.widget.LinearLayoutCompat>

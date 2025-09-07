@@ -10,8 +10,8 @@
     <!-- Scrollable Vacation Detailed Form -->
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="270dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:fillViewport="true"
         android:background="@color/cream"
         android:paddingTop="32dp"

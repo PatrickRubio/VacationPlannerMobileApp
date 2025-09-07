@@ -17,6 +17,7 @@ public abstract class VacationDatabaseBuilder extends RoomDatabase {
     public abstract ExcursionDAO excursionDAO();
     private static volatile VacationDatabaseBuilder INSTANCE;
 
+    // Asynchronous Database
     static VacationDatabaseBuilder getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (VacationDatabaseBuilder.class) {

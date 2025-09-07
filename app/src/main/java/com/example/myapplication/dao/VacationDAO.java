@@ -13,6 +13,8 @@ import java.util.List;
 
 @Dao
 public interface VacationDAO {
+    // Data Access Object
+    // Inserts data into the database
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Vacation vacation);
 
@@ -22,6 +24,7 @@ public interface VacationDAO {
     @Delete
     void delete(Vacation vacation);
 
+    // Queries data into the database
     @Query("SELECT * FROM VACATIONS ORDER BY vacationID ASC")
     List<Vacation> getAllVacations();
 }

@@ -13,6 +13,8 @@ import java.util.List;
 
 @Dao
 public interface ExcursionDAO {
+    // Data Access Object
+    // Inserts data into the database
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Excursion excursion);
 
@@ -22,9 +24,11 @@ public interface ExcursionDAO {
     @Delete
     void delete(Excursion excursion);
 
+    // Queries data into the database
     @Query("SELECT * FROM EXCURSIONS ORDER BY excursionID ASC")
     List<Excursion> getAllExcursions();
 
+    // Queries all excursions from the database with the vacationID
     @Query("SELECT * FROM EXCURSIONS WHERE vacationID = :vacation ORDER BY excursionID ASC")
     List<Excursion> getAssociatedExcursions(int vacation);
 }
