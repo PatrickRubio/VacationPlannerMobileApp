@@ -14,6 +14,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class ExcursionDetails extends AppCompatActivity {
@@ -138,8 +140,34 @@ public class ExcursionDetails extends AppCompatActivity {
         }
         // Save the excursion with the menu
         if (item.getItemId() == R.id.excursionsave) {
-            Excursion excursion;
             String excursionDate = editDate.getText().toString();
+            // Validation for excursion date being within vacation range
+            Vacation vacation = null;
+            List<Vacation> vacations = repository.getmAllVacations();
+            for (Vacation vac : vacations) {
+                if (vac.getVacationID() == vacationID) {
+                    vacation = vac;
+                    break;
+                }
+            }
+            if (vacation != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
+                try {
+                    Date excDate = sdf.parse(excursionDate);
+                    Date startDate = sdf.parse(vacation.getStartDate());
+                    Date endDate = sdf.parse(vacation.getEndDate());
+
+                    if (excDate.before(startDate) || excDate.after(endDate)) {
+                        Toast.makeText(this, "The excursion date must be within range of vacation's START and END dates", Toast.LENGTH_LONG).show();
+                        return true;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Excursion date format not valid.", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+            }
+            Excursion excursion;
             if (excursionID == -1) {
                 if (repository.getmALLExcursions().size() == 0)
                     excursionID = 1;
