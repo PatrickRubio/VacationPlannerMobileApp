@@ -1,0 +1,36 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MyApplication" parent="Theme.Material3.DayNight">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        // Primary colors
+        <item name="colorPrimary">@color/navy</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/cream</item>
+
+        // Secondary colors
+        <item name="colorSecondary">@color/wood_brown</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">@color/wood_brown_light</item>
+
+        // Background colors
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:textColor">@color/black</item>
+
+    </style>
+    <style name="Text.Large" parent="TextAppearance.Material3.BodyLarge">
+        <item name="android:textSize">22sp</item>
+        <item name="android:lineSpacingExtra">4dp</item>
+    </style>
+
+    <style name="Text.Medium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="Text.Small" parent="TextAppearance.Material3.BodySmall">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+
+    <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
+</resources>
