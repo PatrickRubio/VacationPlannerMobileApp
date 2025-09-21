@@ -2,6 +2,8 @@ package com.example.myapplication.database;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.myapplication.dao.ExcursionDAO;
 import com.example.myapplication.dao.VacationDAO;
 import com.example.myapplication.entities.Excursion;
@@ -28,103 +30,44 @@ public class Repository {
     }
 
     // Gets vacations from database and creates a new database
-    // VACATION METHODS
-    public List<Vacation>getmAllVacations() {
-        databaseExecutor.execute(()-> {
-            mALLVacations = mVacationDAO.getAllVacations();
-        });
-        // Only needs sleep try/catch because this is asynchronous
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return mALLVacations;
+    // -------------VACATION METHODS--------------
+    // Expose LiveData for Vacations
+    public LiveData<List<Vacation>> getAllVacations() {
+        return mVacationDAO.getAllVacations();
     }
+    // Insert, update, delete asynchronous
     public void insert(Vacation vacation) {
-        databaseExecutor.execute(() -> {
-            mVacationDAO.insert(vacation);
-        });
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        databaseExecutor.execute(() -> mVacationDAO.insert(vacation));
     }
 
     public void update(Vacation vacation) {
-        databaseExecutor.execute(() -> {
-            mVacationDAO.update(vacation);
-        });
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-    public void delete(Vacation vacation){
-        databaseExecutor.execute(()-> {
-            mVacationDAO.delete(vacation);
-        });
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        databaseExecutor.execute(() -> mVacationDAO.update(vacation));
     }
 
-    // EXCURSION METHODS
-    public List<Excursion>getmALLExcursions() {
-        databaseExecutor.execute(()-> {
-            mALLExcursions = mExcursionDAO.getAllExcursions();
-        });
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return mALLExcursions;
+    public void delete(Vacation vacation) {
+        databaseExecutor.execute(() -> mVacationDAO.delete(vacation));
     }
-    public List<Excursion>getAssociatedExcursions(int vacationID) {
-        databaseExecutor.execute(()-> {
-            mALLExcursions = mExcursionDAO.getAssociatedExcursions(vacationID);
-        });
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return mALLExcursions;
+
+    // -------------EXCURSION METHODS--------------
+    public LiveData<List<Excursion>> getAllExcursions() {
+        return mExcursionDAO.getAllExcursions();
     }
+
+    // Return LiveData for excursions associated with a specific vacation
+    public LiveData<List<Excursion>> getAssociatedExcursions(int vacationID) {
+        return mExcursionDAO.getAssociatedExcursions(vacationID);
+    }
+
+    // Insert, update, delete excursions asynchronously
     public void insert(Excursion excursion) {
-        databaseExecutor.execute(() -> {
-            mExcursionDAO.insert(excursion);
-        });
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        databaseExecutor.execute(() -> mExcursionDAO.insert(excursion));
     }
 
     public void update(Excursion excursion) {
-        databaseExecutor.execute(() -> {
-            mExcursionDAO.update(excursion);
-        });
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        databaseExecutor.execute(() -> mExcursionDAO.update(excursion));
     }
-    public void delete(Excursion excursion){
-        databaseExecutor.execute(()-> {
-            mExcursionDAO.delete(excursion);
-        });
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
+    public void delete(Excursion excursion) {
+        databaseExecutor.execute(() -> mExcursionDAO.delete(excursion));
     }
 }

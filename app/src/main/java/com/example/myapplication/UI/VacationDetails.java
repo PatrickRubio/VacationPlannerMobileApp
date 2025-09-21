@@ -70,6 +70,9 @@ public class VacationDetails extends AppCompatActivity {
     Random rand = new Random();
     int numAlert = rand.nextInt(99999);
 
+    // Snapshots for synchronous access
+    private List<Excursion> excursionSnapshot = new ArrayList<>();
+    private List<Vacation> vacationSnapshot = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,21 +81,43 @@ public class VacationDetails extends AppCompatActivity {
         setContentView(R.layout.activity_vacation_details);
         FloatingActionButton fab = findViewById(R.id.floatingActionButton2);
 
+        // Initialize UI
         editName = findViewById(R.id.titletext);
         editPrice = findViewById(R.id.pricetext);
         editHotel = findViewById(R.id.hoteltext);
         editStartDate = findViewById(R.id.startDate);
         editEndDate = findViewById(R.id.endDate);
+
         vacationID = getIntent().getIntExtra("id", -1);
         name = getIntent().getStringExtra("name");
         price = getIntent().getDoubleExtra("price", 0.0);
         vacationHotel = getIntent().getStringExtra("hotel");
         startDate = getIntent().getStringExtra("startDate");
         endDate = getIntent().getStringExtra("endDate");
+
         editName.setText(name);
         editHotel.setText(vacationHotel);
         editPrice.setText(Double.toString(price));
+
         numAlert = rand.nextInt(99999);
+
+        // LiveData observers
+        repository = new Repository(getApplication());
+
+        // RecyclerView setup
+        RecyclerView recyclerView = findViewById(R.id.excursionRecyclerView);
+        final ExcursionAdapter excursionAdapter = new ExcursionAdapter(this);
+        recyclerView.setAdapter(excursionAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // LiveData observers
+        repository.getAllVacations().observe(this, vacations -> vacationSnapshot = vacations);
+
+        repository.getAssociatedExcursions(vacationID).observe(this, excursions -> {
+            excursionSnapshot = excursions;
+            excursionAdapter.setExcursions(excursions); // just update data
+        });
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,17 +133,6 @@ public class VacationDetails extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-        RecyclerView recyclerView = findViewById(R.id.excursionRecyclerView);
-        repository = new Repository(getApplication());
-        final ExcursionAdapter excursionAdapter = new ExcursionAdapter(this);
-        recyclerView.setAdapter(excursionAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        List<Excursion> filteredExcursions = new ArrayList<>();
-        for (Excursion e : repository.getmALLExcursions()) {
-            if (e.getVacationID() == vacationID) filteredExcursions.add(e);
-        }
-        excursionAdapter.setExcursions(filteredExcursions);
 
         // Date Information to see if existing dates are available
 
@@ -209,7 +223,7 @@ public class VacationDetails extends AppCompatActivity {
             this.finish();
             return true;
         }
-        // If the user selects the option to save a vacation
+        // Save Vacation
         if (item.getItemId() == R.id.vacationsave) {
             Vacation vacation;
 
@@ -228,9 +242,8 @@ public class VacationDetails extends AppCompatActivity {
                 }
                 // If user vacation does not exist already
                 if (vacationID == -1) {
-                    if (repository.getmAllVacations().size() == 0) vacationID = 1;
-                    else
-                        vacationID = repository.getmAllVacations().get(repository.getmAllVacations().size() - 1).getVacationID() + 1;
+                    vacationID = vacationSnapshot.isEmpty() ?
+                            1 : vacationSnapshot.get(vacationSnapshot.size() - 1).getVacationID() + 1;
                     vacation = new Vacation(vacationID, editName.getText().toString(), Double.parseDouble(editPrice.getText().toString()), vacationHotel, startDateStr, endDateStr);
                     repository.insert(vacation);
                     this.finish();
@@ -249,12 +262,12 @@ public class VacationDetails extends AppCompatActivity {
         }
         // If the user selects the option to delete a vacation
         if (item.getItemId() == R.id.vacationdelete) {
-            for (Vacation vacation : repository.getmAllVacations()) {
-                if (vacation.getVacationID() == vacationID) currentVacation = vacation;
+            for (Vacation v : vacationSnapshot) {
+                if (v.getVacationID() == vacationID) currentVacation = v;
             }
             numExcursions = 0;
-            for (Excursion excursion : repository.getmALLExcursions()) {
-                if (excursion.getVacationID() == vacationID) ++numExcursions;
+            for (Excursion e : excursionSnapshot) {
+                if (e.getVacationID() == vacationID) numExcursions++;
             }
             if (numExcursions == 0) {
                 repository.delete(currentVacation);
@@ -304,17 +317,15 @@ public class VacationDetails extends AppCompatActivity {
                     + "Price: $" + editPrice.getText().toString() + "\n"
                     + "Start Date: " + editStartDate.getText().toString() + "\n"
                     + "End Date: " + editEndDate.getText().toString();
-            // Excursion details being added to vacation details when shared
-            List <Excursion> excursions = repository.getAssociatedExcursions(vacationID);
 
-            if (excursions != null && !excursions.isEmpty()) {
-                vacationDetailsShare = vacationDetailsShare + "\n\nExcursions: \n";
-                for (int i = 0; i < excursions.size(); i++) {
-                    Excursion excursion = excursions.get(i);
-                    vacationDetailsShare = vacationDetailsShare + excursion.getExcursionName() + " on " + excursion.getExcursionDate() + "\n";
+
+            if (!excursionSnapshot.isEmpty()) {
+                vacationDetailsShare += "\n\nExcursions:\n";
+                for (Excursion e : excursionSnapshot) {
+                    vacationDetailsShare += e.getExcursionName() + " on " + e.getExcursionDate() + "\n";
                 }
             } else {
-                vacationDetailsShare = vacationDetailsShare + "\nNo excursions planned with this vacation.";
+                vacationDetailsShare += "\nNo excursions planned.";
             }
 
             // Share intent
@@ -358,18 +369,18 @@ public class VacationDetails extends AppCompatActivity {
         System.out.println("Vacation = " + numAlert);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        RecyclerView recyclerView = findViewById(R.id.excursionRecyclerView);
-        repository = new Repository(getApplication());
-        final ExcursionAdapter excursionAdapter = new ExcursionAdapter(this);
-        recyclerView.setAdapter(excursionAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        List<Excursion> filteredExcursions = new ArrayList<>();
-        for (Excursion e : repository.getmALLExcursions()) {
-            if (e.getVacationID() == vacationID) filteredExcursions.add(e);
-        }
-        excursionAdapter.setExcursions(filteredExcursions);
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        RecyclerView recyclerView = findViewById(R.id.excursionRecyclerView);
+//        repository = new Repository(getApplication());
+//        final ExcursionAdapter excursionAdapter = new ExcursionAdapter(this);
+//        recyclerView.setAdapter(excursionAdapter);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        List<Excursion> filteredExcursions = new ArrayList<>();
+//        for (Excursion e : repository.getmALLExcursions()) {
+//            if (e.getVacationID() == vacationID) filteredExcursions.add(e);
+//        }
+//        excursionAdapter.setExcursions(filteredExcursions);
+//    }
 }

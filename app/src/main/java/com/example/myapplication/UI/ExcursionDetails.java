@@ -50,31 +50,42 @@ public class ExcursionDetails extends AppCompatActivity {
     DatePickerDialog.OnDateSetListener startDate;
     final Calendar myCalendarStart = Calendar.getInstance();
 
+    // Snapshots of LiveData for synchronous access
+    private List<Vacation> vacationSnapshot = new ArrayList<>();
+    private List<Excursion> excursionSnapshot = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_excursion_details);
         // Declaring Variables to be able to edit and get information to layout widget
         repository = new Repository(getApplication());
-        name = getIntent().getStringExtra("name");
-        editName = findViewById(R.id.excursionName);
-        editName.setText(name);
-        price = getIntent().getDoubleExtra("price", -1.0);
-        editPrice = findViewById(R.id.excursionPrice);
-        editPrice.setText(Double.toString(price));
 
+        // Get intent extras
+        name = getIntent().getStringExtra("name");
+        price = getIntent().getDoubleExtra("price", -1.0);
         excursionID = getIntent().getIntExtra("id", -1);
         vacationID = getIntent().getIntExtra("vacationID", -1);
         excursionDate = getIntent().getStringExtra("date");
+
+        // Initialize UI elements
+        editName = findViewById(R.id.excursionName);
+        editPrice = findViewById(R.id.excursionPrice);
         editNote = findViewById(R.id.note);
         editDate = findViewById(R.id.date);
+        Spinner spinner = findViewById(R.id.spinner);
 
-        String dateFormat = "MM/dd/yy";
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
+        editName.setText(name);
+        editPrice.setText(Double.toString(price));
 
         if (excursionDate != null) {
             editDate.setText(excursionDate);
         }
+
+        // Date picker
+        String dateFormat = "MM/dd/yy";
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
+
         editDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,11 +97,13 @@ public class ExcursionDetails extends AppCompatActivity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                new DatePickerDialog(ExcursionDetails.this, startDate, myCalendarStart
-                        .get(Calendar.YEAR), myCalendarStart.get(Calendar.MONTH),
+                new DatePickerDialog(ExcursionDetails.this, startDate,
+                        myCalendarStart.get(Calendar.YEAR),
+                        myCalendarStart.get(Calendar.MONTH),
                         myCalendarStart.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+        // Adjust window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -106,21 +119,23 @@ public class ExcursionDetails extends AppCompatActivity {
                 updateLabelStart();
             }
         };
-        Spinner spinner=findViewById(R.id.spinner);
-        ArrayList<Vacation> vacationArrayList=new ArrayList<>();
 
-        vacationArrayList.addAll(repository.getmAllVacations());
+        // Created Spinner which populates it inside the observer
+        repository.getAllVacations().observe(this, vacations -> {
+            ArrayAdapter<Vacation> vacationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, vacations);
+            vacationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(vacationAdapter);
 
-        ArrayAdapter<Vacation>vacationAdapter=new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,vacationArrayList);
-        spinner.setAdapter(vacationAdapter);
-        // Set spinner to correlate matching vacation ID
-        for (int i = 0; i < vacationArrayList.size(); i++) {
-            if (vacationArrayList.get(i).getVacationID() == vacationID) {
-                spinner.setSelection(i);
-                break;
+            // Set spinner to the current vacationID
+            for (int i = 0; i < vacations.size(); i++) {
+                if (vacations.get(i).getVacationID() == vacationID) {
+                    spinner.setSelection(i);
+                    break;
+                }
             }
-        }
-
+        });
+        // Observe excursions to keep snapshot for ID generation
+        repository.getAllExcursions().observe(this, excursions -> excursionSnapshot = excursions);
     }
     private void updateLabelStart() {
         String dateFormat = "MM/dd/yy";
@@ -143,8 +158,7 @@ public class ExcursionDetails extends AppCompatActivity {
             String excursionDate = editDate.getText().toString();
             // Validation for excursion date being within vacation range
             Vacation vacation = null;
-            List<Vacation> vacations = repository.getmAllVacations();
-            for (Vacation vac : vacations) {
+            for (Vacation vac : vacationSnapshot) {
                 if (vac.getVacationID() == vacationID) {
                     vacation = vac;
                     break;
@@ -169,17 +183,20 @@ public class ExcursionDetails extends AppCompatActivity {
             }
             Excursion excursion;
             if (excursionID == -1) {
-                if (repository.getmALLExcursions().size() == 0)
-                    excursionID = 1;
-                else
-                    excursionID = repository.getmALLExcursions().get(repository.getmALLExcursions().size() - 1).getExcursionID() + 1;
-                excursion = new Excursion(excursionID, editName.getText().toString(), Double.parseDouble(editPrice.getText().toString()), vacationID, excursionDate);
-                repository.insert(excursion);
-            } else {
-                excursion = new Excursion(excursionID, editName.getText().toString(), Double.parseDouble(editPrice.getText().toString()), vacationID, excursionDate);
-                repository.update(excursion);
+                // Generate new ID
+                excursionID = excursionSnapshot.isEmpty() ? 1 :
+                        excursionSnapshot.get(excursionSnapshot.size() - 1).getExcursionID() + 1;
             }
-            this.finish();
+
+            excursion = new Excursion(excursionID, editName.getText().toString(),
+                    Double.parseDouble(editPrice.getText().toString()),
+                    vacationID, excursionDate);
+
+            if (getIntent().getIntExtra("id", -1) == -1)
+                repository.insert(excursion);
+            else
+                repository.update(excursion);
+            finish();
             return true;
         }
         // Delete excursion with the menu

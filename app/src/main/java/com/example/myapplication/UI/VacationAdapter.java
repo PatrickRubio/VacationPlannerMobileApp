@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,10 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.entities.Vacation;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.VacationViewHolder> {
+public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.VacationViewHolder> implements Filterable {
     private List <Vacation> mVacations;
+    // Adding a copy of the vacations list to not lose data
+    private List<Vacation> mVacationsFull;
 
     private final Context context;
 
@@ -79,6 +84,37 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Vacati
     }
     public void setVacations(List<Vacation> vacations){
         mVacations = vacations;
+        mVacationsFull = new ArrayList<>(vacations); // Full list for filtering
         notifyDataSetChanged();
     }
+    // Implementing filter methods for the search bar functionality
+    @Override
+    public Filter getFilter() {
+        return vacationFilter;
+    }
+    private Filter vacationFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Vacation> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(mVacationsFull);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (Vacation item : mVacationsFull) {
+                    if (item.getVacationName().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+            return results;
+        }
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            mVacations.clear();
+            mVacations.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 }

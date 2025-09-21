@@ -25,12 +25,13 @@ import java.util.List;
 
 public class VacationList extends AppCompatActivity {
     private Repository repository;
+    private VacationAdapter vacationAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_vacation_list);
+
         FloatingActionButton fab=findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -39,46 +40,48 @@ public class VacationList extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        // Initialize RecyclerView and Adapter
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
-        repository = new Repository(getApplication());
-        List<Vacation> allVacations = repository.getmAllVacations();
-        final VacationAdapter vacationAdapter = new VacationAdapter(this);
+        vacationAdapter = new VacationAdapter(this);
         recyclerView.setAdapter(vacationAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        vacationAdapter.setVacations(allVacations);
 
-
-        //System.out.println(getIntent().getStringExtra("test"));
-
+        // EdgeInsets padding
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        // Initialize Repository
+        repository = new Repository(getApplication());
+
+        // Observe LiveData for all vacations
+        repository.getAllVacations().observe(this, vacations -> {
+            // This updates the adapter automatically whenever the database changes
+            vacationAdapter.setVacations(vacations);
+        });
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_vacation_list, menu);
         return true;
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
-        List<Vacation> allVacations = repository.getmAllVacations();
-        RecyclerView recyclerView = findViewById((R.id.recyclerView));
-        final VacationAdapter vacationAdapter = new VacationAdapter(this);
-        recyclerView.setAdapter(vacationAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        vacationAdapter.setVacations(allVacations);
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        List<Vacation> allVacations = repository.getmAllVacations();
+//        RecyclerView recyclerView = findViewById((R.id.recyclerView));
+//        final VacationAdapter vacationAdapter = new VacationAdapter(this);
+//        recyclerView.setAdapter(vacationAdapter);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        vacationAdapter.setVacations(allVacations);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId()==android.R.id.home) {
             this.finish();
-//            Intent intent = new Intent(VacationList.this, VacationDetails.class);
-//            startActivity(intent);
             return true;
         }
 
