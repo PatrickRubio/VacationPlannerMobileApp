@@ -93,7 +93,7 @@
                     android:hint="price" />
             </LinearLayout>
 
-            <!-- Start and End Dates -->
+            <!-- Start and End Dates / Generate Report Button -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -115,6 +115,16 @@
                     android:layout_height="wrap_content"
                     android:inputType="date"
                     android:text="End Date"/>
+
+                <Button
+                    android:id="@+id/button_generate_report"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:text="Generate Report"
+                    app:layout_constraintTop_toBottomOf="@+id/tripDetailsView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
             </LinearLayout>
 

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -194,7 +195,24 @@ public class VacationDetails extends AppCompatActivity {
                         myCalendarEnd.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
-
+        // Button to Generate PDF Report
+        Button reportButton = findViewById(R.id.button_generate_report);
+        // onClickListener is created for when Button is clicked
+        reportButton.setOnClickListener(v -> {
+            // Ensure current vacation is being generated
+            // Iterate through list of vacations
+            for (Vacation vac : vacationSnapshot) {
+                if (vac.getVacationID() == vacationID) {
+                    currentVacation = vac;
+                }
+            }
+            // Generate report if vacation exists
+            if (currentVacation != null) {
+                TripReportGenerator.generateReport(this, currentVacation, excursionSnapshot); // Live Data excursionSnapshot
+            } else {
+                Toast.makeText(this, "Vacation not found.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // Start and end date labels
@@ -294,6 +312,25 @@ public class VacationDetails extends AppCompatActivity {
             mainAlertPicker(endOnScreenDate, mainAlert);
             return true;
         }
+//        // Button to Generate PDF Report
+//        if (item.getItemId() == R.id.button_generate_report) {
+//            for (Vacation v : vacationSnapshot) {
+//                if (v.getVacationID() == vacationID) currentVacation = v;
+//            }
+//
+//            if (currentVacation != null) {
+//                TripReportGenerator.generateReport(
+//                        this,
+//                        currentVacation,
+//                        excursionSnapshot // synced with LiveData observer
+//                );
+//            } else {
+//                Toast.makeText(this, "Vacation not found.", Toast.LENGTH_SHORT).show();
+//            }
+//            return true;
+//        }
+
+
 
         // Alert for both start and end date
         if (item.getItemId() == R.id.alertboth) {
