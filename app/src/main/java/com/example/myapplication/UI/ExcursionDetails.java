@@ -122,6 +122,7 @@ public class ExcursionDetails extends AppCompatActivity {
 
         // Created Spinner which populates it inside the observer
         repository.getAllVacations().observe(this, vacations -> {
+            vacationSnapshot = vacations;
             ArrayAdapter<Vacation> vacationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, vacations);
             vacationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spinner.setAdapter(vacationAdapter);

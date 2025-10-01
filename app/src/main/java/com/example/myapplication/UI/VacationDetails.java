@@ -34,9 +34,12 @@ import com.example.myapplication.entities.Excursion;
 import com.example.myapplication.entities.Vacation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.jetbrains.annotations.TestOnly;
+
 import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -312,25 +315,6 @@ public class VacationDetails extends AppCompatActivity {
             mainAlertPicker(endOnScreenDate, mainAlert);
             return true;
         }
-//        // Button to Generate PDF Report
-//        if (item.getItemId() == R.id.button_generate_report) {
-//            for (Vacation v : vacationSnapshot) {
-//                if (v.getVacationID() == vacationID) currentVacation = v;
-//            }
-//
-//            if (currentVacation != null) {
-//                TripReportGenerator.generateReport(
-//                        this,
-//                        currentVacation,
-//                        excursionSnapshot // synced with LiveData observer
-//                );
-//            } else {
-//                Toast.makeText(this, "Vacation not found.", Toast.LENGTH_SHORT).show();
-//            }
-//            return true;
-//        }
-
-
 
         // Alert for both start and end date
         if (item.getItemId() == R.id.alertboth) {
