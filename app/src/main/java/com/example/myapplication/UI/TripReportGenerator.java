@@ -67,8 +67,7 @@ public class TripReportGenerator {
         pdf.finishPage(page);
 
         // File Save in Downloads
-        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File file = new File(downloadsDir, "TripReport_" + vacation.getVacationName() + ".pdf");
+        File file = new File(context.getExternalFilesDir(null), "TripReport_" + vacation.getVacationName() + ".pdf");
 
         try {
             pdf.writeTo(new FileOutputStream(file));
