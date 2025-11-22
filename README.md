@@ -1,29 +1,103 @@
-<strong>**DO NOT DISTRIBUTE OR PUBLICLY POST SOLUTIONS TO THESE LABS. MAKE ALL FORKS OF THIS REPOSITORY WITH SOLUTION CODE PRIVATE. PLEASE REFER TO THE STUDENT CODE OF CONDUCT AND ETHICAL EXPECTATIONS FOR COLLEGE OF INFORMATION TECHNOLOGY STUDENTS FOR SPECIFICS. **</strong>
+# Adventura - Vacation Planner Mobile Application
+## This is the code for Adventura - Vacation Planner Mobile Application
+Android | Java | SQLite (Room) | MVVM Architecture  
 
-# WESTERN GOVERNORS UNIVERSITY 
-## D424 – SOFTWARE ENGINEERING CAPSTONE
-Welcome to Software Engineering Capstone! This is an opportunity for students to develop full stack software engineering documentation and applications. They will execute documentation, unit testing, revision of software applications, and deploy software applications with scripts and containers on a cloud platform.
+A mobile application that allows users to create, manage, and store vacation plans using Android Studio, Java, and SQLite (Room).
 
-FOR SPECIFIC TASK INSTRUCTIONS AND REQUIREMENTS FOR THIS ASSESSMENT, PLEASE REFER TO THE COURSE PAGE.
-BASIC INSTRUCTIONS
-For this assessment, you will deploy your developed full stack software product to a web service of your choice.
+---
+
+## Features
+
+- Create and save vacation trips  
+- Persistent local data storage using Room (SQLite)
+
+**Add trip details:**
+- Destination  
+- Dates  
+- Lodging  
+- Activities  
+
+---
+
+## MVVM Architecture
+
+- MVVM design pattern  
+- XML-based UI layouts  
+- Tested on emulator and Android device  
+
+---
+
+## Tech Stack
+
+- **Languages:** Java  
+- **Architecture:** MVVM, Repository pattern  
+- **Database:** SQLite (Room Library)  
+- **Tools:** Android Studio, Git, GitHub, Gradle
+
+---
+
+# 🛠️ Installation & How to Use
+
+ **Download the APK:**
+[Download APK here](https://patrickrubio.github.io/Adventura-Vacation-Planner/)
 
 
-## SUPPLEMENTAL RESOURCES  
-1.	How to clone a project to IntelliJ using Git?
+ **Install the APK on your Android device:**
+- Allow installation from unknown sources in your device settings if prompted
+- Open the APK file and follow the on-screen instructions to install
 
-> Ensure that you have Git installed on your system and that IntelliJ is installed using [Toolbox](https://www.jetbrains.com/toolbox-app/). Make sure that you are using version 2022.3.2. Once this has been confirmed, click the clone button and use the 'IntelliJ IDEA (HTTPS)' button. This will open IntelliJ with a prompt to clone the proejct. Save it in a safe location for the directory and press clone. IntelliJ will prompt you for your credentials. Enter in your WGU Credentials and the project will be cloned onto your local machine.  
 
-2. How to create a branch and start Development?
+**Launch the App:**
+- Open the Adventura app from your app drawer
+- Start creating and managing your vacation plans
 
-- GitLab method
-> Press the '+' button located near your branch name. In the dropdown list, press the 'New branch' button. This will allow you to create a name for your branch. Once the branch has been named, you can select 'Create Branch' to push the branch to your repository.
 
-- IntelliJ method
-> In IntelliJ, Go to the 'Git' button on the top toolbar. Select the new branch option and create a name for the branch. Make sure checkout branch is selected and press create. You can now add a commit message and push the new branch to the local repo.
+---
 
-## SUPPORT
-If you need additional support, please navigate to the course page and reach out to your course instructor.
+## Testing
 
-## FUTURE USE
-Take this opportunity to create or add to a simple resume portfolio to highlight and showcase your work for future use in career search, experience, and education!
+
+- Tested on Android Emulator (API 28–34)
+- Tested on physical Android devices
+- Tested using Unit Tests in Android Studio
+- Verified **CRUD operations** & **lifecycle handling**
+
+
+---
+
+
+## Learning Objectives
+
+
+- **Java OOP**
+- **Mobile development fundamentals**
+- **Room ORM / SQLite**
+- **MVVM architecture**
+- **App lifecycle management**
+- **Version control (Git)**
+
+
+---
+
+
+## Future Enhancements
+
+
+- Add **Firebase cloud sync**
+- Add **packing list feature**
+- **Weather API integration**
+- **Photo attachments**
+- **Dark mode**
+
+
+---
+
+
+## Author
+
+
+**Patrick Rubio**
+
+
+
+- LinkedIn: [https://www.linkedin.com/in/patrick-rubio-a60587190/](https://www.linkedin.com/in/patrick-rubio-a60587190/)
